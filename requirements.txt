@@ -1,0 +1,7 @@
+streamlit
+pandas
+sleeper-api-wrapper
+truststore
+requests
+beautifulsoup4
+lxml
