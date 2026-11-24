@@ -147,8 +147,8 @@ def get_mock_draft_data():
 
 mock_drafts, mock_picks = get_mock_draft_data()
 
-st.write("Mock Drafts")
-st.dataframe(mock_drafts)
+# st.write("Mock Drafts")
+# st.dataframe(mock_drafts)
 
 # Using only the most recent mock draft for each player and position, project the average draft position.
 if not mock_picks.empty:
@@ -182,8 +182,8 @@ if not mock_picks.empty:
     latest_picks["round"] = (latest_picks["overall_pick"] - 1) // number_of_teams + 1
     latest_picks["pick_in_round"] = (latest_picks["overall_pick"] - 1) % number_of_teams + 1
 
-    st.subheader("Most Recent Mock Draft")
-    st.dataframe(latest_picks.reset_index(drop=True))
+    # st.subheader("Most Recent Mock Draft")
+    # st.dataframe(latest_picks.reset_index(drop=True))
 
     # Project picks for league
     draft_board_2027 = df[df["year"] == "2027"].copy()
