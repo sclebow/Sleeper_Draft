@@ -9,6 +9,7 @@ truststore.inject_into_ssl()
 import streamlit as st
 from sleeper_wrapper import League
 import pandas as pd
+from urllib.parse import quote_plus
 
 from mock_draft_scraper import scrape_dynasty_nerds
 
@@ -192,7 +193,6 @@ if not mock_picks.empty:
         (draft_board_2027["round"] - 1) * number_of_teams
         + draft_board_2027["pick_in_round"]
     )
-    st.dataframe(draft_board_2027)
 
     # Merge mock_picks into the 2027 draft board, keeping player, position, school
     # Use overall_pick to match mock picks to draft board slots.
@@ -202,11 +202,21 @@ if not mock_picks.empty:
         how="left",
     ).drop(columns="overall_pick")
     
+    # Add a column for Youtube Highlight links for each player.
+    draft_board_2027["youtube_highlights"] = draft_board_2027["player"].apply(
+        lambda player: f"https://www.youtube.com/results?search_query={quote_plus(f'{player} highlights')}"
+    )
+    # Format Youtube highlight links as clickable HTML links.
+    draft_board_2027["youtube_highlights"] = draft_board_2027["youtube_highlights"].apply(
+        lambda url: f'<a href="{url}" target="_blank">Highlights</a>'
+    )
+
     st.subheader("2027 Draft Board")
-    st.dataframe(
+    st.markdown(
         draft_board_2027.drop(
             columns=["year", "round", "pick_in_round", "original_owner", "traded"]
-        ).reset_index(drop=True)
+        ).to_html(escape=False, index=False),
+        unsafe_allow_html=True,
     )
 
     # Pivot to show picks by current_owner
@@ -219,5 +229,7 @@ if not mock_picks.empty:
             )
             .reset_index(drop=True)
         )
-        df_string = team_df.to_string(index=False, header=False)
-        st.text(df_string)
+        st.markdown(
+            team_df.to_html(escape=False, index=False),
+            unsafe_allow_html=True,
+        )
